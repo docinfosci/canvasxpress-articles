@@ -5,11 +5,8 @@ editor:
     wrap: 80
 format: 
     html:
-        # embed-resources: true
+        embed-resources: true
         smooth-scroll: true
-        include-in-header: 
-          - text: |
-              <script src="http://marvl.infotech.monash.edu/webcola/cola.min.js"></script>
 ---
 
 ```{python}
@@ -140,47 +137,46 @@ data set:
 
 from pandas import DataFrame
 
-bc_data = DataFrame(
-  data=[
-    ["Tim", "male"],
-    ["Sally", "female"],
-    ["Greg", "male"],
-    ["Julia", "female"],
-  ],
-  columns=["Name", "Gender"],
+bc_data = DataFrame.from_dict(
+    data={
+        "Amount": [33,44,55],
+    },
+    orient="index",
+    columns=["Sample 1","Sample 2","Sample 3"],
 )
 bc_data.head()
 ```
 
-We can create a pie chart to show the ratio of genders:
+We can create a bar chart:
 
 ```{python}
 # | eval: true
-# | echo: true
+# | echo: false
 
 from canvasxpress.canvas import CanvasXpress
 from canvasxpress.render.jupyter import CXNoteBook
 
 bc_pie_chart = CXNoteBook(
     CanvasXpress(
-        render_to="bc_pie_chart",
+        render_to = "test",
         data = {
-            "y": {
-                "smps": ["Name", "Gender"],
-                "data": [
-                    ["Tim", "male"],
-                    ["Sally", "female"],
-                    ["Greg", "male"],
-                    ["Julia", "female"],
+            "y" : {
+                "data" : [
+                  [33,44,55]
                 ],
+                "smps" : ["Sample 1","Sample 2","Sample 3"],
+                "vars": ["Amount"],
             }
         },
         config = {
-            "graphType": "Pie",
-            "showLegend": True,
-            "theme": "CanvasXpress",
-            "toolbarSize": 22,
-            "xAxis": ["Gender"],
+            "graphOrientation":"vertical",
+            "graphType":"Bar",
+            "showLegend":"false",
+            "smpLabelRotate":"90",
+            "smpTitle":"Samples",
+            "theme":"CanvasXpress",
+            "title":"Simple Bar Graph with Three Samples",
+            "xAxisTitle":"Value",
         },
         width=500,
         height=500,
@@ -496,7 +492,7 @@ Metadata is provided as key-value pairs with list lengths matching the number of
 samples or variables being described:
 
 |                   | *vars Metadata 1*       | Sample 1           | Sample 2           |
-|-------------------|-----------------------|-------------------|-------------------|
+|--------------------|---------------------|--------------------|--------------------|
 | *smps metadata 1* |                         | *metadata 1 value* | *metadata 1 value* |
 | *smps metadata 2* |                         | *metadata 2 value* | *metadata 2 value* |
 | variable 1        | *vars metadata 1 value* | value              | value              |
