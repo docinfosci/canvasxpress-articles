@@ -1,0 +1,66 @@
+---
+title: "Quarto + CanvasXpress for Python initCola Issue"
+format: 
+    html:
+        embed-resources: true
+---
+
+CanvasXpress needs to be installed for this Quarto document to be compiled.  To install CanvasXpress in a local virtual environment execute the following in the same directory as this Quarto document before rendering it:
+
+```{text}
+python3 -m venv env
+source env/bin/activate
+pip install canvasxpress[all]
+```
+
+CanvasXpress for Python by default uses the latest available version of the JS and CSS from the Web.  You can pin the version prior to rendering any chart using the following code:
+
+```{python}
+from canvasxpress.canvas import CanvasXpress
+
+# Any version after 45.5 no longer works.
+CanvasXpress.set_cdn_edition("45.5")
+```
+
+Versions up through 45.5 work as expected.  Beginning with 45.6 the `canvas` element is registered in the HTML but the CX code can no longer execute due to the `initCola` exception.  See my workspace screenshot with a "pure" edition of this document along with errors, etc.
+
+```{python}
+# | eval: true
+# | echo: true
+from canvasxpress.canvas import CanvasXpress
+from canvasxpress.render.jupyter import CXNoteBook
+
+cx = CanvasXpress(
+    render_to="bar1",
+    data={
+        "y": {
+            "vars": ["V1"],
+            "smps": ["S1", "S2", "S3"],
+            "data": [[33, 44, 55]],
+        }
+    },
+    config={
+        "graphOrientation": "vertical",
+        "plotBox": True,
+        "showLegend": False,
+        "smpLabelRotate": 90,
+        "smpTitle": "Samples",
+        "theme": "CanvasXpress",
+        "title": "Bar Graph Title",
+        "xAxis": ["V1"],
+        "xAxisTitle": "Value",
+        "graphType": "Bar",
+    },
+    width=609,
+    height=609,
+)
+
+display = CXNoteBook(cx)
+display.render()
+```
+
+If you reproduce my issue the following will occur:
+
+1. This document will render.
+1. The rendered edition will show the above code and have an HTML `canvas` object with proper width and height reserved in the visual space.  No chart will be visible, however.
+1. An inspection of the console error log will show an exception for initCola in the CX source.
