@@ -1,0 +1,6 @@
+# Environments
+**/env
+
+# Quarto generated files that can be rebuilt
+**/article_files
+**/*.html
